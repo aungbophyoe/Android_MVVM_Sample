@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.aungbophyoe.space.mvvmsample.R
+import com.aungbophyoe.space.mvvmsample.databinding.RvPhotosItemBinding
 import com.aungbophyoe.space.mvvmsample.model.Photo
 import com.aungbophyoe.space.mvvmsample.util.ImageBinderAdapter
 import kotlinx.android.synthetic.main.rv_photos_item.view.*
@@ -26,17 +27,28 @@ class PhotoRecyclerAdapter constructor(private val context: Context):ListAdapter
 
     }
 ) {
-    private val inflater: LayoutInflater = LayoutInflater.from(context)
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
-        val imageView = view.ivPhoto
-        val title = view.tvTitle
+
+    class ViewHolder private constructor(val binding: RvPhotosItemBinding) : RecyclerView.ViewHolder(binding.root){
+
+        fun bind(item:Photo){
+            binding.photo = item
+            binding.executePendingBindings()
+        }
+
+
+        companion object {
+            fun from(parent: ViewGroup): ViewHolder{
+                val layoutInflater : LayoutInflater = LayoutInflater.from(parent.context)
+                val binding = RvPhotosItemBinding.inflate(layoutInflater ,parent,false)
+                val viewHolder = ViewHolder(binding)
+                return viewHolder
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val inflateView = inflater.inflate(R.layout.rv_photos_item, parent, false)
-        val viewHolder = ViewHolder(inflateView)
-        return viewHolder
+        return ViewHolder.from(parent)
     }
 
     override fun getItemCount(): Int {
@@ -45,9 +57,11 @@ class PhotoRecyclerAdapter constructor(private val context: Context):ListAdapter
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         try {
-            val photo = currentList[position]
+            val item = getItem(position)
+            holder.bind(item)
+            /*val photo = currentList[position]
             ImageBinderAdapter.setImageUrl(holder.imageView,photo.url)
-            holder.title.text = photo.title
+            holder.title.text = photo.title*/
         }catch (e:Exception){
             Log.d("recycler",e.message.toString())
         }
