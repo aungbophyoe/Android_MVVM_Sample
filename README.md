@@ -4,7 +4,7 @@
 
 __UI__
 <br><br>
-<img src="./ScreenShot/demo.jpeg" width="500" height="600">
+<img src="./ScreenShot/demo.jpeg" width="400" height="550">
 <br><br>
 
 ### Dependencies
