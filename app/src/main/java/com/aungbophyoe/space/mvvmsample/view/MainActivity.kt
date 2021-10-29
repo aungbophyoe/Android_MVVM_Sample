@@ -17,6 +17,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.view.*
 import retrofit2.Response
 
+
+/*
+*  create by aungbophyoe
+*  on 10/29/2021
+**/
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val tag : String = "MainActivity"
@@ -25,60 +31,18 @@ class MainActivity : AppCompatActivity() {
     private val photoRecyclerAdapter by lazy {
         PhotoRecyclerAdapter(this)
     }
-    private val dataList : ArrayList<Photo>  = arrayListOf()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this,R.layout.activity_main)
         binding!!.apply {
             rvPhotos.layoutManager = LinearLayoutManager(this@MainActivity,LinearLayoutManager.VERTICAL,false)
-            photoRecyclerAdapter.submitList(dataList)
+            lifecycleOwner = this@MainActivity
+            viewModel = mainActivityViewModel
             rvPhotos.adapter = photoRecyclerAdapter
-            observeApiData()
-            mainActivityViewModel.getPhoto()
         }
     }
 
-    private fun observeApiData(){
-        try {
-            binding!!.apply {
-                mainActivityViewModel.dataList.observe(this@MainActivity,{
-                    it?.let { dataState ->
-                        when(dataState) {
-                            is DataState.Loading ->{
-                                rvPhotos.showOrGone(false)
-                                tvNoData.showOrGone(false)
-                                progressBar.showOrGone(true)
-
-                            }
-                            is DataState.Error ->{
-                                rvPhotos.showOrGone(false)
-                                tvNoData.showOrGone(true)
-                                progressBar.showOrGone(false)
-                            }
-                            is DataState.Success<Response<List<Photo>>> -> {
-                                rvPhotos.showOrGone(true)
-                                tvNoData.showOrGone(false)
-                                progressBar.showOrGone(false)
-                                dataState.data.let { response ->
-                                    if(response.isSuccessful){
-                                        if(dataList.size>0){
-                                            dataList.clear()
-                                        }
-                                        val list = response.body()!!
-                                        Log.d(tag,"$list")
-                                        dataList.addAll(list)
-                                        photoRecyclerAdapter.submitList(dataList)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                })
-            }
-        }catch (e:Exception){
-            Log.d(tag,e.message.toString())
-        }
-    }
 
     override fun onDestroy() {
         super.onDestroy()
