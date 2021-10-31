@@ -1,6 +1,10 @@
 package com.aungbophyoe.space.mvvmsample.di
 
+import com.aungbophyoe.space.mvvmsample.mapper.EntityMapper
+import com.aungbophyoe.space.mvvmsample.mapper.NetworkMapper
+import com.aungbophyoe.space.mvvmsample.model.Photo
 import com.aungbophyoe.space.mvvmsample.rest.ApiService
+import com.aungbophyoe.space.mvvmsample.rest.response.PhotoNetworkEntity
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module

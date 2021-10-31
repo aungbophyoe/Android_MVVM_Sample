@@ -4,12 +4,12 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.aungbophyoe.space.mvvmsample.model.Photo
 import com.aungbophyoe.space.mvvmsample.repository.MainRepository
+import com.aungbophyoe.space.mvvmsample.rest.response.PhotoNetworkEntity
 import com.aungbophyoe.space.mvvmsample.util.DataState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,10 +28,8 @@ class MainActivityViewModel @Inject constructor(
                     when(dataState){
                         is DataState.Success -> {
                             _loading.value = false
-                            if(dataState.data.isSuccessful){
-                                _data.value = dataState.data.body()
-                                Log.d("tag",dataState.data.body().toString())
-                            }
+                            _data.value = dataState.data
+                            Log.d("tag",dataState.data.toString())
                         }
                         is DataState.Loading -> {
                             _loading.value = true
@@ -39,7 +37,7 @@ class MainActivityViewModel @Inject constructor(
                         }
                         is DataState.Error -> {
                             _loading.value = false
-                            _data.value = null
+                            _data.value = dataState.data
                         }
                     }
                 }

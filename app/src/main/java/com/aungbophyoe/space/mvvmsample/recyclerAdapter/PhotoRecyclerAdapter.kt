@@ -3,17 +3,13 @@ package com.aungbophyoe.space.mvvmsample.recyclerAdapter
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.aungbophyoe.space.mvvmsample.R
 import com.aungbophyoe.space.mvvmsample.databinding.RvPhotosItemBinding
 import com.aungbophyoe.space.mvvmsample.model.Photo
-import com.aungbophyoe.space.mvvmsample.util.ImageBinderAdapter
-import kotlinx.android.synthetic.main.rv_photos_item.view.*
-import javax.inject.Inject
+import com.aungbophyoe.space.mvvmsample.rest.response.PhotoNetworkEntity
 
 class PhotoRecyclerAdapter constructor(private val context: Context):ListAdapter<Photo,PhotoRecyclerAdapter.ViewHolder>(
     object : DiffUtil.ItemCallback<Photo>(){
@@ -31,7 +27,7 @@ class PhotoRecyclerAdapter constructor(private val context: Context):ListAdapter
 
     class ViewHolder private constructor(val binding: RvPhotosItemBinding) : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(item:Photo){
+        fun bind(item: Photo){
             binding.photo = item
             binding.executePendingBindings()
         }
@@ -59,9 +55,6 @@ class PhotoRecyclerAdapter constructor(private val context: Context):ListAdapter
         try {
             val item = getItem(position)
             holder.bind(item)
-            /*val photo = currentList[position]
-            ImageBinderAdapter.setImageUrl(holder.imageView,photo.url)
-            holder.title.text = photo.title*/
         }catch (e:Exception){
             Log.d("recycler",e.message.toString())
         }

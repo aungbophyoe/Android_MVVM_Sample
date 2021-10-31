@@ -1,16 +1,21 @@
 package com.aungbophyoe.space.mvvmsample.view
 
-import androidx.activity.viewModels
+import android.content.Context
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.room.Room
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.aungbophyoe.space.mvvmsample.di.RepositoryModule
 import com.aungbophyoe.space.mvvmsample.di.RetrofitModule
+import com.aungbophyoe.space.mvvmsample.di.RoomModule
+import com.aungbophyoe.space.mvvmsample.mapper.CacheMapper
+import com.aungbophyoe.space.mvvmsample.mapper.NetworkMapper
 import com.aungbophyoe.space.mvvmsample.model.Photo
 import com.aungbophyoe.space.mvvmsample.repository.MainRepository
 import com.aungbophyoe.space.mvvmsample.rest.ApiService
+import com.aungbophyoe.space.mvvmsample.room.PhotoDao
+import com.aungbophyoe.space.mvvmsample.room.PhotoDatabase
 import com.aungbophyoe.space.mvvmsample.util.observeOnce
 import com.aungbophyoe.space.mvvmsample.viewmodel.MainActivityViewModel
 import com.google.gson.Gson
@@ -18,12 +23,12 @@ import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -32,7 +37,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 @HiltAndroidTest
-@UninstallModules(RetrofitModule::class, RepositoryModule::class)
+@UninstallModules(RetrofitModule::class, RepositoryModule::class,RoomModule::class)
 class MainActivityTest{
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -93,8 +98,28 @@ class MainActivityTest{
         }
 
         @Provides
-        fun provideMainRepository(apiService: ApiService): MainRepository {
-            return MainRepository(apiService)
+        fun provideMainRepository(apiService: ApiService,
+                                  photoDao: PhotoDao,
+                                  cacheMapper: CacheMapper,
+                                  networkMapper: NetworkMapper
+        ):MainRepository{
+            return MainRepository(apiService,photoDao, cacheMapper, networkMapper)
+        }
+    }
+
+    @InstallIn(SingletonComponent::class)
+    @Module
+    object RoomModule {
+        @Provides
+        fun providePhotoDb(@ApplicationContext context: Context): PhotoDatabase {
+            return Room.databaseBuilder(context, PhotoDatabase::class.java, PhotoDatabase.DatabaseName)
+                .fallbackToDestructiveMigration()
+                .build()
+        }
+
+        @Provides
+        fun providePhotoDao(photoDatabase: PhotoDatabase):PhotoDao{
+            return  photoDatabase.photoDao()
         }
     }
 }

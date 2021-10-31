@@ -1,4 +1,4 @@
-"Android-MVVM-Sample"
+##Android-MVVM-Sample
 
 ### Demo
 
@@ -15,8 +15,6 @@ __UI__
 - <a href="https://github.com/coil-kt/coil">Coil</a>
 - <a href="https://developer.android.com/codelabs/kotlin-android-training-diffutil-databinding#0">Recycler data binding</a>
 - <a href="https://developer.android.com/topic/libraries/data-binding/two-way">Two-way data binding</a>
-- <a href="https://developer.android.com/training/testing/junit-rules">Unit Test</a>
+- <a href="https://developer.android.com/training/testing/unit-testing/instrumented-unit-tests">Android Test</a>
+- <a href="https://developer.android.com/studio/inspect/database">Room</a>
 
-
-### Work In Progress
-- Unit Testing
